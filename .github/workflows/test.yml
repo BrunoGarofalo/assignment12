@@ -2,9 +2,9 @@ name: CI/CD
 
 on:
   push:
-    branches: [ put_change ]
+    branches: [ main ]
   pull_request:
-    branches: [ put_change ]
+    branches: [ main ]
 
 jobs:
   test:
