@@ -194,20 +194,45 @@ def update_calculation(
         calc_uuid = UUID(calc_id)
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid calculation id format.")
-    calculation = db.query(Calculation).filter(
+    
+    old_calc = db.query(Calculation).filter(
         Calculation.id == calc_uuid,
         Calculation.user_id == current_user.id
     ).first()
-    if not calculation:
+
+    if not old_calc:
         raise HTTPException(status_code=404, detail="Calculation not found.")
 
-    if calculation_update.inputs is not None:
-        calculation.inputs = calculation_update.inputs
-        calculation.result = calculation.get_result()
-    calculation.updated_at = datetime.utcnow()
+  # Determine new type and inputs
+    new_type = calculation_update.type or old_calc.type
+    new_inputs = calculation_update.inputs or old_calc.inputs
+
+    if new_type == old_calc.type:
+        # Just update inputs
+        old_calc.inputs = new_inputs
+        old_calc.result = old_calc.get_result()
+        old_calc.updated_at = datetime.utcnow()
+        db.commit()
+        db.refresh(old_calc)
+        return old_calc
+
+    # Type changed → replace with new subclass
+    new_calc = Calculation.create(
+        calculation_type=new_type,
+        user_id=current_user.id,
+        inputs=new_inputs
+    )
+    # Keep the same ID and timestamps
+    new_calc.id = old_calc.id
+    new_calc.created_at = old_calc.created_at
+    new_calc.updated_at = datetime.utcnow()
+
+    # Delete old row and add new one
+    db.delete(old_calc)
+    db.add(new_calc)
     db.commit()
-    db.refresh(calculation)
-    return calculation
+    db.refresh(new_calc)
+    return new_calc
 
 # Delete a Calculation
 @app.delete("/calculations/{calc_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["calculations"])

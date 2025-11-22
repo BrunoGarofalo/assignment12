@@ -88,6 +88,12 @@ class CalculationUpdate(BaseModel):
         min_items=2
     )
 
+    #added code to change the type of calculation too, not just the input numbers
+    type: Optional[CalculationType] = Field(
+        None,
+        description="New calculation type",
+        example="division" )
+
     @model_validator(mode='after')
     def validate_inputs(self) -> "CalculationUpdate":
         """Validate the inputs if they are being updated"""
@@ -97,7 +103,8 @@ class CalculationUpdate(BaseModel):
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": {"inputs": [42, 7]}}
+        json_schema_extra={"example": {"inputs": [42, 7],
+                                       "type": "division"}}
     )
 
 class CalculationResponse(CalculationBase):
@@ -126,9 +133,9 @@ class CalculationResponse(CalculationBase):
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174999",
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
-                "type": "addition",
+                "type": "division",
                 "inputs": [10.5, 3, 2],
-                "result": 15.5,
+                "result": 1.75,
                 "created_at": "2025-01-01T00:00:00",
                 "updated_at": "2025-01-01T00:00:00"
             }
