@@ -222,6 +222,9 @@ def update_calculation(
         user_id=current_user.id,
         inputs=new_inputs
     )
+
+    new_calc.result = new_calc.get_result()
+
     # Keep the same ID and timestamps
     new_calc.id = old_calc.id
     new_calc.created_at = old_calc.created_at
