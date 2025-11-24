@@ -94,6 +94,7 @@ Expected response:
 ### Register a New User
 POST /auth/register
 Payload:
+```json
 {
   "username": "johndoe",
   "email": "john.doe@example.com",
@@ -113,6 +114,7 @@ Bearer <your_token_here>
 
 ### Create a Calculation
 POST /calculations
+```json
 {
   "type": "addition",
   "inputs": [10, 5]
@@ -123,6 +125,7 @@ GET /calculations
 
 ### Update a Calculation
 PUT /calculations/{calc_id}
+```json
 {
   "inputs": [100, 10],
   "type": "addition"
