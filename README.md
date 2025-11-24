@@ -103,7 +103,7 @@ Payload:
   "first_name": "John",
   "last_name": "Doe"
 }
-
+```
 ### Login and Retrieve JWT Token
 POST /auth/login or /auth/token
 Copy the access_token.
@@ -119,7 +119,7 @@ POST /calculations
   "type": "addition",
   "inputs": [10, 5]
 }
-
+```
 ### List Calculations
 GET /calculations
 
@@ -130,7 +130,7 @@ PUT /calculations/{calc_id}
   "inputs": [100, 10],
   "type": "addition"
 }
-
+```
 ### Delete a Calculation
 DELETE /calculations/{calc_id}
 
